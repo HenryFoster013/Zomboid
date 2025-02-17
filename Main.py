@@ -33,7 +33,7 @@ def Graphics(canvas):
     rot = zombie.GetRotation()
     frame = zombie.GetAnimationFrame()
     zombiepos = (offset[0] + zombie.GetPosition()[0], offset[1] + zombie.GetPosition()[1])
-    if zombie.GetSmooth()
+    if zombie.GetSmooth():
         canvas.draw_circle((zombiepos[0], zombiepos[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
     canvas.draw_image(zombie_spritesheet, ((200 * rot) + 100, (200 * frame) + 100), (200, 200), zombiepos, (150,150), 0)
 
