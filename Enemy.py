@@ -38,7 +38,7 @@ class Zombie():
         else:
             self.FastFollowPlayer()
 
-    def GetSmooth(self)
+    def GetSmooth(self):
         return self.smooth
     
     def SmoothFollowPlayer(self, player_position, x_difference, y_difference):
