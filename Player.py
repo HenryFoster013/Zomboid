@@ -110,10 +110,10 @@ def Movement():
     # Apply movement
     newx = player_position[0] + movement_axis[0] * movement_speed * mod #CHANGE THIS
     newy = player_position[1] + movement_axis[1] * movement_speed * mod
-    #if(newx <= (1152) and newx > (-1152)): #BG width (1920 * 1.2) / 2 
-    player_position[0] = newx
-    #if(newy <= (605) and newy > (-648)): #BG width (1080 * 1.2) / 2 (slightly higher for down y bcz its weird)
-    player_position[1] = newy
+    if(newx <= (1152) and newx > (-1152)): #BG width (1920 * 1.2) / 2 
+        player_position[0] = newx
+    if(newy <= (605) and newy > (-648)): #BG width (1080 * 1.2) / 2 (slightly higher for down y bcz its weird)
+        player_position[1] = newy
     
 
 def GetRotation():
