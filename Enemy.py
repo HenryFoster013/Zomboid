@@ -13,15 +13,44 @@ class Zombie():
         self.current_angle = 0;
         self.damage_cooldown = 0
         self.animation_frame = -1
+        self.smooth = True
 
-    def FollowPlayer(self,player_position):
-        self.x_difference = player_position[0] - self.position[0]
-        self.y_difference = player_position[1] - self.position[1]
+    def GetPosition(self):
+        return self.position
 
-        displacement_magnitude = math.sqrt(self.x_difference**2 + self.y_difference**2)
-        self.position[0] += (self.x_difference * self.speed)/displacement_magnitude
-        self.position[1] += (self.y_difference * self.speed)/displacement_magnitude
+    def FollowPlayer(self, player_position):
+        x_difference = player_position[0] - self.position[0]
+        y_difference = player_position[1] - self.position[1]
 
+        buffer = 40
+        self.movement_axis = [0,0]
+        if(x_difference > buffer):
+            self.movement_axis[0] = 1
+        elif(x_difference < -buffer):
+            self.movement_axis[0] = -1
+        if(y_difference > buffer):
+            self.movement_axis[1] = 1
+        elif(y_difference < -buffer):
+            self.movement_axis[1] = -1
+
+        if(self.smooth):
+            self.SmoothFollowPlayer(player_position, x_difference, y_difference)
+        else:
+            self.FastFollowPlayer()
+
+    def GetSmooth(self)
+        return self.smooth
+    
+    def SmoothFollowPlayer(self, player_position, x_difference, y_difference):
+        displacement_magnitude = math.sqrt(x_difference**2 + y_difference**2)
+        self.position[0] += (x_difference * self.speed) / displacement_magnitude
+        self.position[1] += (y_difference * self.speed) / displacement_magnitude
+
+    def FastFollowPlayer(self):
+        mod = 1
+        if(movement_axis[0] != 0 and movement_axis[1] != 0):
+            mod = 0.7071
+        self.position = (self.position[0] + (movement_axis[0] * mod * self.speed), self.position[1] + (movement_axis[1] * mod * self.speed))
 
     def CheckCollisions(self, position):
         if self.damage_cooldown > 0:
@@ -32,24 +61,20 @@ class Zombie():
                 print("enemy hit")
                 self.damage_cooldown = 50
 
-    def check_death(self):
+    def Death(self):
         if self.health <=0:
-            print("enemy dead")
-            self.position = [0,0]
-            self.health = 100
+            print("ZOMBO DEAD")
 
     def Update(self):
-        player_pos = [0,0]
-        player_pos[0] = player.player_position[0]
-        player_pos[1] = player.player_position[1]
-        self.FollowPlayer(player_pos)
-        self.check_death()
+        self.FollowPlayer(player.player_position)
+        self.Death()
 
-    def GetRotation(self)
+    def GetRotation(self):
+        self.CalculateRotation()
         return self.current_angle
 
-    def CalculateRotation(self, axis):
-        match axis:
+    def CalculateRotation(self):
+        match self.movement_axis:
             case [0,1]:
                 self.current_angle = 4
                 return
@@ -84,14 +109,14 @@ class Zombie():
         frame_length = 6
 
         if(self.animation_frame > (frame_length * 4 - 1)):
-            animation_frame = 0
+            self.animation_frame = 0
 
         final_num = 0;
-        if(animation_frame == -1 or (animation_frame >= frame_length and animation_frame < (frame_length * 2)) or (animation_frame >= (frame_length * 3))):
+        if(self.animation_frame == -1 or (self.animation_frame >= frame_length and self.animation_frame < (frame_length * 2)) or (self.animation_frame >= (frame_length * 3))):
             final_num = 0;
-        if(animation_frame >= (frame_length * 2) and animation_frame < (frame_length * 3)):
+        if(self.animation_frame >= (frame_length * 2) and self.animation_frame < (frame_length * 3)):
             final_num = 1
-        if(animation_frame < frame_length and animation_frame > 0):
+        if(self.animation_frame < frame_length and self.animation_frame > 0):
             final_num = 2
 
         return final_num
