@@ -2,10 +2,12 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import math
 import os
 import Player as player
+import Enemy as enemy
 
 screen_width = 800
 screen_height = 600
 frame_counter = 0
+zombie = enemy.Zombie(100,2,10,[60,60])
 
 def Graphics(canvas):
     midpoint = [screen_width/2, screen_height/2]    

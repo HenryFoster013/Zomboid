@@ -77,11 +77,21 @@ class Zombie():
     
     def GetAnimationFrame(self):
         if(self.movement_axis != [0,0]):
-            animation_frame += 1
+            self.animation_frame += 1
         else:
-            animation_frame = -1
+            self.animation_frame = -1
 
-        if(animation_frame > 23):
+        frame_length = 6
+
+        if(self.animation_frame > (frame_length * 4 - 1)):
             animation_frame = 0
 
-        return animation_frame
+        final_num = 0;
+        if(animation_frame == -1 or (animation_frame >= frame_length and animation_frame < (frame_length * 2)) or (animation_frame >= (frame_length * 3))):
+            final_num = 0;
+        if(animation_frame >= (frame_length * 2) and animation_frame < (frame_length * 3)):
+            final_num = 1
+        if(animation_frame < frame_length and animation_frame > 0):
+            final_num = 2
+
+        return final_num
