@@ -12,7 +12,7 @@ def Graphics(canvas):
     offset = [midpoint[0] - player.player_position[0], midpoint[1] - player.player_position[1]]
 
     # BACKGROUND
-    canvas.draw_image(background, (1920 / 2, 1080 / 2), (1920, 1080), (offset[0] + (1920 * 0.6), offset[1] + (1080 * 0.6)), (1920 * 1.2, 1080 * 1.2))
+    canvas.draw_image(background, (1920 / 2, 1080 / 2), (1920, 1080), (offset[0] + (1920 * 0.625), offset[1] + (1080 * 0.625)), (1920 * 1.25, 1080 * 1.25))
 
     # DEBUG
     canvas.draw_circle(offset, 20, 1, 'Green', 'Green')
