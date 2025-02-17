@@ -9,26 +9,21 @@ class Zombie():
         self.speed = speed
         self.damage = damage
         self.position = position
-        self.target = []
         self.cooldown = 0
-        self.movement_index = [0,0]
+        self.current_angle = 0;
         self.damage_cooldown = 0
-        zombie_angle = 0.0
-        movement_axis = [0,0]
-        animation_frame = -1
-        zombie_spritesheet = simplegui.load_image('https://drive.google.com/file/d/12C-a-XqCjEXw_qxuIH9R6V8wKnJiMOrr/view?usp=sharing')
+        self.animation_frame = -1
 
     def FollowPlayer(self,player_position):
-        self.target = player_position
-        x_difference = player_position[0] - self.position[0]
-        y_difference = player_position[1] - self.position[1]
-        displacement = [x_difference, y_difference]
-        displacement_magnitude = math.sqrt(displacement[0]**2 + displacement[1]**2)
-        self.position[0] += (displacement[0] * self.speed)/displacement_magnitude
-        self.position[1] += (displacement[1] * self.speed)/displacement_magnitude
+        self.x_difference = player_position[0] - self.position[0]
+        self.y_difference = player_position[1] - self.position[1]
+
+        displacement_magnitude = math.sqrt(self.x_difference**2 + self.y_difference**2)
+        self.position[0] += (self.x_difference * self.speed)/displacement_magnitude
+        self.position[1] += (self.y_difference * self.speed)/displacement_magnitude
 
 
-    def check_collision(self, position):
+    def CheckCollisions(self, position):
         if self.damage_cooldown > 0:
             self.damage_cooldown -= 1
         if (self.position[0] + 16.0 >= position[0] and self.position[0] - 16.0 <= position[0]) and self.position[1] + 16.0 >= position[1] and self.position[1] - 16.0 <= position[1]:
@@ -50,40 +45,38 @@ class Zombie():
         self.FollowPlayer(player_pos)
         self.check_death()
 
-    def CalculateRotation():
-        global zombie_angle, movement_axis
-        match movement_axis:
+    def GetRotation(self)
+        return self.current_angle
+
+    def CalculateRotation(self, axis):
+        match axis:
             case [0,1]:
-                zombie_angle = 3.14159265
+                self.current_angle = 4
                 return
             case [1,1]:
-                zombie_angle = 2.35619449
+                self.current_angle = 5
                 return
             case [-1,1]:
-                zombie_angle = 3.92699082
+                self.current_angle = 3
                 return
             case [1,0]:
-                zombie_angle = 1.57079633
+                self.current_angle = 6
                 return
             case [-1,0]:
-                zombie_angle = 4.71238898
+                self.current_angle = 2
                 return
             case [1,-1]:
-                zombie_angle = 0.78539816
+                self.current_angle = 7
                 return
             case [-1,-1]:
-                zombie_angle = 5.49778715
+                self.current_angle = 1
                 return
             case [0,-1]:
-                zombie_angle = 0
+                self.current_angle = 0
                 return
     
-    def GetRotation():
-        return zombie_angle
-    
-    def GetAnimationFrame():
-        global animation_frame
-        if(movement_axis != [0,0]):
+    def GetAnimationFrame(self):
+        if(self.movement_axis != [0,0]):
             animation_frame += 1
         else:
             animation_frame = -1
