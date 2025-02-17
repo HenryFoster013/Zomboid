@@ -5,7 +5,7 @@ import Projectiles as projectiles
 player_position = [1152, 648]
 movement_axis = [0,0]
 shooting_axis = [0,0]
-movement_speed = 10
+movement_speed = 8
 
 shooting_cooldown = -1
 max_cooldown = 6
@@ -105,11 +105,11 @@ def Movement():
     # Normalise vector
     mod = 1
     if(movement_axis[0] != 0 and movement_axis[1] != 0):
-        mod = 1 / math.sqrt(2)
+        mod = 0.7071
     
     # Apply movement
-    newx = player_position[0] + movement_axis[0] * movement_speed * mod #CHANGE THIS
-    newy = player_position[1] + movement_axis[1] * movement_speed * mod
+    newx = player_position[0] + (movement_axis[0] * movement_speed * mod)
+    newy = player_position[1] + (movement_axis[1] * movement_speed * mod)
     player_radius = 30
     if(newx < ((1920 * 1.25) - 60) and newx > 60):
         player_position[0] = newx

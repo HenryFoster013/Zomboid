@@ -21,14 +21,21 @@ def Graphics(canvas):
     canvas.draw_circle([offset[0] + 60, offset[1] + 60], 20, 1, 'Green', 'Green')
 
     # PLAYER ANIMATION
-    # HITBOX SIZE canvas.draw_circle(midpoint, 30, 1, 'Blue', 'Blue')
     canvas.draw_circle((midpoint[0], midpoint[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
-    player_rotation = player.GetRotation()
-    player_frame = player.GetAnimationFrame()
+    rot = player.GetRotation()
+    frame = player.GetAnimationFrame()
     shooting_add = 0;
     if(player.GetMuzzleFlash()):
         shooting_add = 600
-    canvas.draw_image(spritesheet, ((200 * player_rotation) + 100, (200 * player_frame) + 100 + shooting_add), (200, 200), midpoint, (150,150), 0)
+    canvas.draw_image(player_spritesheet, ((200 * rot) + 100, (200 * frame) + 100 + shooting_add), (200, 200), midpoint, (150,150), 0)
+
+    # ZOMBIE ANIMATION
+    rot = zombie.GetRotation()
+    frame = zombie.GetAnimationFrame()
+    zombiepos = (offset[0] + zombie.GetPosition()[0], offset[1] + zombie.GetPosition()[1])
+    if zombie.GetSmooth()
+        canvas.draw_circle((zombiepos[0], zombiepos[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
+    canvas.draw_image(zombie_spritesheet, ((200 * rot) + 100, (200 * frame) + 100), (200, 200), zombiepos, (150,150), 0)
 
     for projectile in player.current_projectiles:
         if(projectile.Alive()):
@@ -42,6 +49,7 @@ def Draw_Handler(canvas):
     global screen_width, screen_height, frame_counter
     frame_counter += 1
     player.Update()
+    zombie.Update()
     Graphics(canvas)
 
 def Key_Down_Handler(key):
@@ -56,7 +64,8 @@ frame.set_keyup_handler(Key_Up_Handler)
 
 frame.set_canvas_background('Black')
 background = simplegui.load_image('https://drive.google.com/uc?id=1xsla4hN7u9LZ6UgyjJ088w_AHSubAd-f')
-spritesheet = simplegui.load_image('https://drive.google.com/uc?id=1N4fyrxW-1Y7CLO-3va-EVbaZQ65CQHaJ')
+player_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=1N4fyrxW-1Y7CLO-3va-EVbaZQ65CQHaJ')
+zombie_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=13FDMYzx1goduwwtE4WEganWopds8wMAo')
 
 frame.set_draw_handler(Draw_Handler)
 frame.start()
