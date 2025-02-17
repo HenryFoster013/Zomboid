@@ -30,7 +30,7 @@ def Graphics(canvas):
 
     for projectile in player.current_projectiles:
         if(projectile.Alive()):
-            zombie.check_collision(projectile.position)
+            zombie.CheckCollisions(projectile.position)
             projectile.Update()
             offsettedPos = [projectile.position[0] + offset[0], projectile.position[1] + offset[1]]
             colour = "rgb(255,247,165)"
