@@ -1,8 +1,9 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import math
 import Projectiles as projectiles
+from Tile import *
 
-player_position = [1152, 648]
+player_position = [1152, 748]
 movement_axis = [0,0]
 shooting_axis = [0,0]
 movement_speed = 8
@@ -16,6 +17,18 @@ current_pointer = -1
 current_angle = 0
 animation_frame = -1
 movement_buffer = [-2,-2]
+
+#MOVEMENT VALUES
+movement_up = False
+movement_down = False
+movement_left = False
+movement_right = False
+
+#COLLISION VALUES
+up_collision = False
+down_collision = False
+left_collision = False
+right_collision = False
 
 for i in range(max_projectiles):
     current_projectiles.append(projectiles.bullet([0,0], [0,0], projectile_lifetime, False)) #CHANGE THIS
@@ -36,18 +49,23 @@ def fire_bullet():
         CalculateRotation(shooting_axis)
 
 def Handle_Input_Down(key):
+    global movement_up, movement_down, movement_left, movement_right
     match key:
         # WASD Movement
         case 87: #W
+            movement_up = True
             movement_axis[1] += -1
             return
         case 83: #S
+            movement_down = True
             movement_axis[1] += 1
             return
         case 65: #A
+            movement_left = True
             movement_axis[0] += -1
             return
         case 68: #D
+            movement_right = True
             movement_axis[0] += 1
             return
 
@@ -70,18 +88,23 @@ def Handle_Input_Down(key):
             return
 
 def Handle_Input_Up(key):
+    global movement_up,movement_down,movement_left,movement_right
     match key:
         # WASD Movement
         case 87: #W
+            movement_up = False
             movement_axis[1] -= -1
             return
         case 83: #S
+            movement_down = False
             movement_axis[1] -= 1
             return
         case 65: #A
+            movement_left = False
             movement_axis[0] -= -1
             return
         case 68: #D
+            movement_right = False
             movement_axis[0] -= 1
             return
 
@@ -100,22 +123,30 @@ def Handle_Input_Up(key):
             return
     
 def Movement():
-    global player_position, movement_axis, movement_speed
-
+    global player_position, movement_axis, movement_speed, up_collision, down_collision, left_collision, right_collision
     # Normalise vector
     mod = 1
     if(movement_axis[0] != 0 and movement_axis[1] != 0):
         mod = 0.7071
     
     # Apply movement
-    newx = player_position[0] + (movement_axis[0] * movement_speed * mod)
-    newy = player_position[1] + (movement_axis[1] * movement_speed * mod)
+    newx = player_position[0]
+    newy = player_position[1]
+
+    
+    if movement_left and left_collision == False:
+        newx = player_position[0] + (movement_axis[0] * movement_speed * mod)
+    if movement_right and right_collision == False:
+        newx = player_position[0] + (movement_axis[0] * movement_speed * mod)
+    if movement_up and up_collision == False:
+        newy = player_position[1] + (movement_axis[1] * movement_speed * mod)
+    if movement_down and down_collision == False:
+        newy = player_position[1] + (movement_axis[1] * movement_speed * mod)
     player_radius = 30
     if(newx < ((1920 * 1.25) - 60) and newx > 60):
         player_position[0] = newx
     if(newy < ((1080 * 1.25) - 80) and newy > 60):
         player_position[1] = newy
-    
 
 def GetRotation():
     return current_angle 
@@ -185,7 +216,39 @@ def Rotation():
     movement_buffer[0] = movement_axis[0]
     movement_buffer[1] = movement_axis[1]
 
+def wall_collision_check():
+        global up_collision,down_collision,left_collision,right_collision
+        up_collision = False
+        down_collision = False
+        left_collision = False
+        right_collision = False
+        for i in range(len(walls)):
+            if walls[i].check_collision((player_position[0] + movement_speed), player_position[1]) == True:
+                right_collision = True
+                print("right collision")
+            if walls[i].check_collision((player_position[0] - movement_speed), player_position[1]) == True:
+                left_collision = True
+                print("left collision")
+            if walls[i].check_collision(player_position[0], (player_position[1] + movement_speed)) == True:
+                down_collision = True
+                print("down collision")
+            if walls[i].check_collision(player_position[0], (player_position[1] - 10)) == True:
+                up_collision = True
+                print("up collision")
+
+        for i in range(len(diagonal_walls)):
+            if diagonal_walls[i].check_collision((player_position[0] + movement_speed), player_position[1]) == True:
+                right_collision = True
+            if diagonal_walls[i].check_collision((player_position[0] - movement_speed), player_position[1]) == True:
+                left_collision = True
+            if diagonal_walls[i].check_collision(player_position[0], (player_position[1] + movement_speed)) == True:
+                down_collision = True
+            if diagonal_walls[i].check_collision(player_position[0], (player_position[1] - movement_speed)) == True:
+                up_collision = True
+
 def Update():
     Movement()
     Shooting()
     Rotation()
+    wall_collision_check()
+
