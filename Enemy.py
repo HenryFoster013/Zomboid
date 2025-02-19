@@ -24,8 +24,34 @@ class Zombie():
 
         self.dead = False
 
+        self.death_animation_x = 0
+        self.death_animation_y = 0
+        self.death_animation_frame_count = -1
+        self.death_animation_cooldown = 15
+
     def GetPosition(self):
         return self.position
+    
+
+    def DeathAnimation(self,death_sprite,frames):
+        run = False
+        set_frames = frames-2
+        if self.health >= 0 and self.death_animation_frame_count < set_frames:
+            run = True
+        if run == True: 
+            sprite = death_sprite
+            if self.death_animation_cooldown <= 0:
+                if self.death_animation_x >= 1600:
+                        self.death_animation_x = 0
+                        self.death_animation_y+= 200
+                self.death_animation_x = self.death_animation_x + 200 
+                self.death_animation_frame_count += 1
+                self.death_animation_cooldown = 15
+            else:
+                self.death_animation_cooldown -=1
+        return (self.death_animation_x, self.death_animation_y)
+            
+
 
     def FollowPlayer(self, player_position):
 
@@ -172,4 +198,4 @@ class Zombie():
             if diagonal_walls[i].check_collision(self.position[0], (self.position[1] - self.speed)) == True:
                 up_collision = True
     
-    blood_splat = simplegui.load_image("https://drive.google.com/uc?id=1P_opnpO1Hqb-8zKXwmDMyvGLJOlO2dUe")
+    death_sprite = simplegui.load_image("https://drive.google.com/uc?id=1R83lnLK6gZX9LlnsT8vv2wAFQsoiyple")

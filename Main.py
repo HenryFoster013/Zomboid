@@ -22,8 +22,9 @@ def Graphics(canvas):
 
     #ZOMBIE DEATH SPRITE (TEMP)
     if zombie.dead == True:
+        frame = zombie.DeathAnimation(zombie.death_sprite,4)
         zombiepos = (offset[0] + zombie.GetPosition()[0], offset[1] + zombie.GetPosition()[1])
-        canvas.draw_image(zombie.blood_splat,((200 * 0) + 100, (200 * 0) + 100), (200, 200), zombiepos, (150,150), 0)
+        canvas.draw_image(zombie.death_sprite,((frame[0]) + 100, (frame[1]) + 100), (200, 200), zombiepos, (150,150), 0)
 
     # PLAYER ANIMATION
     canvas.draw_circle((midpoint[0], midpoint[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
