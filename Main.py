@@ -17,8 +17,6 @@ def Graphics(canvas):
     canvas.draw_image(background, (1920 / 2, 1080 / 2), (1920, 1080), (offset[0] + (1920 * 0.625), offset[1] + (1080 * 0.625)), (1920 * 1.25, 1080 * 1.25))
 
     # DEBUG
-    #canvas.draw_circle(offset, 20, 1, 'Green', 'Green')
-    #canvas.draw_circle([offset[0] + 60, offset[1] + 60], 20, 1, 'Green', 'Green')
 
     #ZOMBIE DEATH SPRITE (TEMP)
     if zombie.dead == True:
