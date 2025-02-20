@@ -101,7 +101,7 @@ class Zombie():
     def CheckCollisions(self, position):
         if self.damage_cooldown > 0:
             self.damage_cooldown -= 1
-        if (self.position[0] + 16.0 >= position[0] and self.position[0] - 16.0 <= position[0]) and self.position[1] + 16.0 >= position[1] and self.position[1] - 16.0 <= position[1]:
+        if (self.position[0] + 23.0 >= position[0] and self.position[0] - 23.0 <= position[0]) and self.position[1] + 23.0 >= position[1] and self.position[1] - 23.0 <= position[1]:
             if self.damage_cooldown == 0:
                 self.health -= 25
                 print("enemy hit")
