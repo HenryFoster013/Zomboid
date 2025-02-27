@@ -14,6 +14,7 @@ wave_num = 1
 zombie_list = [zombie]
 dead_zombie_list = []
 wave_timer = 600
+bg_timer = 738
 
 zombie_count = len(zombie_list)
 dead_zombie_count = len(dead_zombie_list)
@@ -77,13 +78,17 @@ def Graphics(canvas):
     canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
 
 def Draw_Handler(canvas):
-    global screen_width, screen_height, frame_counter
+    global screen_width, screen_height, frame_counter, bg_timer
     frame_counter += 1
     player.Update()
     for zomb in (zombie_list):
         zomb.Update()
     wave_handler()
     Graphics(canvas)
+    bg_timer -= 1
+    if(bg_timer <= 0):
+        bg_timer = 738
+        bgmusic.play()
 
 def wave_handler():
     global zombie_count, zombie_list, wave_num, dead_zombie_list, total_zombie_count, wave_timer
@@ -150,6 +155,12 @@ frame.set_keydown_handler(Key_Down_Handler)
 frame.set_keyup_handler(Key_Up_Handler)
 
 frame.set_canvas_background('Black')
+
+bgmusic = simplegui.load_sound('https://drive.google.com/uc?id=1KYtHghOEherZE_Lp9ZhZghRWVI8nmqmp')
+bgmusic.play()
+#zombie_death = simplegui.load_sound('https://drive.google.com/uc?id=113RkSNdnkkzjqzHPKdryopckHHCrHu-O')
+#zombie_hit = simplegui.load_sound('https://drive.google.com/uc?id=1TvVuUmrZ96RQ3jWNZ4X8DA9ZRBbab5Zr')
+
 fog = simplegui.load_image('https://drive.google.com/uc?id=13mg7pLi-NKC_CotzXw2ekIOKnjyuJ8hf')
 bgfog = simplegui.load_image('https://drive.google.com/uc?id=1KScILrlQKk9tMGTPWE6V5udo6HIRrxjC')
 background = simplegui.load_image('https://drive.google.com/uc?id=1xsla4hN7u9LZ6UgyjJ088w_AHSubAd-f')
