@@ -18,6 +18,8 @@ current_angle = 0
 animation_frame = -1
 movement_buffer = [-2,-2]
 
+score = 0
+
 #MOVEMENT VALUES
 movement_up = False
 movement_down = False

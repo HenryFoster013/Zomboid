@@ -5,7 +5,8 @@ import Player as player
 from Tile import *
 
 class Zombie():
-    def __init__(self,health, speed, damage, position):
+    def __init__(self,health, speed, damage, position, score_value):
+        self.score_value = score_value
         self.health = health
         self.speed = speed
         self.speed_buffer = speed
@@ -16,6 +17,7 @@ class Zombie():
         self.damage_cooldown = 0
         self.animation_frame = -1
         self.smooth = True
+        self.movement_axis = [0,0]
         
         self.up_collision = False
         self.down_collision = False
@@ -99,19 +101,21 @@ class Zombie():
         self.position = (self.position[0] + (self.movement_axis[0] * mod * self.speed), self.position[1] + (self.movement_axis[1] * mod * self.speed))
 
     def CheckCollisions(self, position):
-        if self.damage_cooldown > 0:
-            self.damage_cooldown -= 1
-        if (self.position[0] + 23.0 >= position[0] and self.position[0] - 23.0 <= position[0]) and self.position[1] + 23.0 >= position[1] and self.position[1] - 23.0 <= position[1]:
-            if self.damage_cooldown == 0:
-                self.health -= 25
-                print("enemy hit")
-                self.damage_cooldown = 50
+        if self.dead == False:
+            if self.damage_cooldown > 0:
+                self.damage_cooldown -= 1
+            if (self.position[0] + 23.0 >= position[0] and self.position[0] - 23.0 <= position[0]) and self.position[1] + 23.0 >= position[1] and self.position[1] - 23.0 <= position[1]:
+                if self.damage_cooldown == 0:
+                    self.health -= 25
+                    print("enemy hit")
+                    self.damage_cooldown = 50
 
     def Death(self):
         if self.health <=0:
             #print("ZOMBO DEAD")
             self.speed = 0
             self.dead = True
+            player.score += self.score_value
             return self.dead
 
 
