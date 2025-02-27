@@ -4,42 +4,24 @@ class Tile():
     def __init__(self,position_start,position_end):
         self.position_start = position_start
         self.position_end = position_end
-
-    def get_start_pos(self):
-        return self.position_start[0],self.position_start[1]
     
-    def get_end_pos(self):
-        return self.position_end[0],self.position_end[1]
-    
-    def check_collision(self, player_pos_x,player_pos_y):
-        if (player_pos_x >= self.position_start[0] and player_pos_x <= self.position_end[0]) and (player_pos_y >= self.position_start[1] and player_pos_y <= self.position_end[1]):
-            return True
-        else:
-            return False
+    def check_collision(self, pos_x, pos_y):
+        return (pos_x >= self.position_start[0] and pos_x <= self.position_end[0]) and (pos_y >= self.position_start[1] and pos_y <= self.position_end[1])
 
 class DiagonalTile():
-    def __init__(self,position_start,position_end):
-        self.position_start = position_start
-        self.position_end = position_end
+    def __init__(self, _position_start, _position_end):
+        self.position_start = _position_start
+        self.position_end = _position_end
         self.thickness = 10
-        self.gradient = (self.position_end[0] - self.position_start[0])/(self.position_end[1]-self.position_start[1])
-
-    def get_start_pos(self):
-        return self.position_start
+        self.gradient = -165/155
     
-    def get_end_pos(self):
-        return self.position_end
-    
-    def check_collision(self, player_pos_x,player_pos_y):
+    def check_collision(self, pos_x, pos_y):
         m = self.gradient
-        x = player_pos_x
-        c = self.position_start[0]
-        y = (m*x)+c 
+        x = pos_x
+        c = self.position_start[1]
+        y = (m*(x - self.position_start[0]))+c 
 
-        if (player_pos_x >= self.position_start[0] and player_pos_x <= self.position_end[0]) and (player_pos_y >= y and player_pos_y <= y + 10):
-            return True
-        else:
-            return False
+        return (pos_x >= self.position_start[0] and pos_x <= self.position_end[0]) and (pos_y >= y - 45 and pos_y <= y + 60)
         
 
 #ALL WALLS:

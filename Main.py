@@ -4,6 +4,7 @@ import os
 import random
 import Player as player
 import Enemy as enemy
+import Tile as tile
 
 screen_width = 800
 screen_height = 600
@@ -12,7 +13,6 @@ zombie = enemy.Zombie(100,2,10,[60,60],10)
 wave_num = 1
 zombie_list = [zombie]
 dead_zombie_list = []
-multiplier = [1,3]
 wave_timer = 600
 
 zombie_count = len(zombie_list)
@@ -24,9 +24,8 @@ def Graphics(canvas):
     offset = [midpoint[0] - player.player_position[0], midpoint[1] - player.player_position[1]]
 
     # BACKGROUND
+    canvas.draw_image(bgfog, (400, 300), (800, 600), (screen_width / 2, screen_height / 2), (screen_width, screen_height))
     canvas.draw_image(background, (1920 / 2, 1080 / 2), (1920, 1080), (offset[0] + (1920 * 0.625), offset[1] + (1080 * 0.625)), (1920 * 1.25, 1080 * 1.25))
-
-    # DEBUG
 
     #ZOMBIE DEATH SPRITE (TEMP)
     for zomb1 in dead_zombie_list:
@@ -45,37 +44,49 @@ def Graphics(canvas):
     canvas.draw_image(player_spritesheet, ((200 * rot) + 100, (200 * frame) + 100 + shooting_add), (200, 200), midpoint, (150,150), 0)
 
     # ZOMBIE ANIMATION
-    for zomb2 in zombie_list:
-        if zomb2.dead == False:
-
-            rot = zomb2.GetRotation()
-            frame = zomb2.GetAnimationFrame()
-            zombiepos = (offset[0] + zomb2.GetPosition()[0], offset[1] + zomb2.GetPosition()[1])
-            if zomb2.GetSmooth():
+    smoothing = (len(zombie_list) < 10)
+    for zomb in zombie_list:
+        if zomb.dead == False:
+            rot = zomb.GetRotation()
+            frame = zomb.GetAnimationFrame()
+            zombiepos = (offset[0] + zomb.GetPosition()[0], offset[1] + zomb.GetPosition()[1])
+            if smoothing:
                 canvas.draw_circle((zombiepos[0], zombiepos[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
             canvas.draw_image(zombie_spritesheet, ((200 * rot) + 100, (200 * frame) + 100), (200, 200), zombiepos, (150,150), 0)
 
     for projectile in player.current_projectiles:
         if(projectile.Alive()):
+            _alive = True
+            for wall in tile.walls:
+                if(wall.check_collision(projectile.position[0], projectile.position[1])):
+                    _alive = False
+            for wall in tile.diagonal_walls:
+                if(wall.check_collision(projectile.position[0], projectile.position[1])):
+                    _alive = False
+            if(not _alive):
+                projectile.kill()
+            
             for zombCollision in zombie_list:
-                zombCollision.CheckCollisions(projectile.position)
+                zombCollision.CheckCollisions(projectile)
             projectile.Update()
             offsettedPos = [projectile.position[0] + offset[0], projectile.position[1] + offset[1]]
             colour = "rgb(255,247,165)"
             canvas.draw_circle(offsettedPos, 3,1, colour, colour)
+    
+
+    canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
 
 def Draw_Handler(canvas):
     global screen_width, screen_height, frame_counter
     frame_counter += 1
     player.Update()
-    #zombie.Update()
-    for zombieUpd in (zombie_list):
-        zombieUpd.Update()
+    for zomb in (zombie_list):
+        zomb.Update()
     wave_handler()
     Graphics(canvas)
 
 def wave_handler():
-    global zombie_count, zombie_list, wave_num, dead_zombie_list, multiplier,total_zombie_count, wave_timer
+    global zombie_count, zombie_list, wave_num, dead_zombie_list, total_zombie_count, wave_timer
     for zombMove in zombie_list:
             if zombMove.dead == True:
                 dead_zombie_list.append(zombMove)
@@ -86,9 +97,7 @@ def wave_handler():
         if wave_timer <= 0:
             print("wave cleared")
             wave_num += 1
-            multiplier[0] = multiplier[0] * 2
-            multiplier[1] = multiplier[1] * 2
-            new_zombie_count = random.randint(multiplier[0],multiplier[1])
+            new_zombie_count = 3
             while len(dead_zombie_list) != 0:
                 for deadZomb in dead_zombie_list:
                     deadZomb.health = 100
@@ -105,15 +114,30 @@ def wave_handler():
                 total_zombie_count += 1
 
 
-            wave_timer = 600
+            wave_timer = 300
         else:
             wave_timer -= 1
 
 def spawn_location():
-    return [random.randint(100,800),random.randint(100,800)]
+    vert_horizontal = (random.randint(0,1) == 1)
+    left_right = (random.randint(0,1) == 1)
+    xpos = 0
+    ypos = 0
 
-def mouse_handler(pos):
-    print(pos)
+    if(vert_horizontal):
+        if(left_right):
+            ypos = 1550
+        else:
+            ypos = -200
+        xpos = random.randint(-200, 2600)
+    else:
+        if(left_right):
+            xpos = 2600
+        else:
+            xpos = -200
+        ypos = random.randint(-200, 1550)
+
+    return [xpos,ypos]
 
 def Key_Down_Handler(key):
     player.Handle_Input_Down(key)
@@ -121,20 +145,17 @@ def Key_Down_Handler(key):
 def Key_Up_Handler(key):
     player.Handle_Input_Up(key)
 
-
-walls = ["left_house_wall","middle_house_wall","right_house_wall"]
-diagonal_walls = ["diagonal_house_wall"]
-
 frame = simplegui.create_frame('Video Game', screen_width, screen_height)
 frame.set_keydown_handler(Key_Down_Handler)
 frame.set_keyup_handler(Key_Up_Handler)
 
 frame.set_canvas_background('Black')
+fog = simplegui.load_image('https://drive.google.com/uc?id=13mg7pLi-NKC_CotzXw2ekIOKnjyuJ8hf')
+bgfog = simplegui.load_image('https://drive.google.com/uc?id=1KScILrlQKk9tMGTPWE6V5udo6HIRrxjC')
 background = simplegui.load_image('https://drive.google.com/uc?id=1xsla4hN7u9LZ6UgyjJ088w_AHSubAd-f')
 player_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=1N4fyrxW-1Y7CLO-3va-EVbaZQ65CQHaJ')
 zombie_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=13FDMYzx1goduwwtE4WEganWopds8wMAo')
 
 
 frame.set_draw_handler(Draw_Handler)
-frame.set_mouseclick_handler(mouse_handler)
 frame.start()

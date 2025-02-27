@@ -227,16 +227,12 @@ def wall_collision_check():
         for i in range(len(walls)):
             if walls[i].check_collision((player_position[0] + movement_speed), player_position[1]) == True:
                 right_collision = True
-                print("right collision")
             if walls[i].check_collision((player_position[0] - movement_speed), player_position[1]) == True:
                 left_collision = True
-                print("left collision")
             if walls[i].check_collision(player_position[0], (player_position[1] + movement_speed)) == True:
                 down_collision = True
-                print("down collision")
             if walls[i].check_collision(player_position[0], (player_position[1] - 10)) == True:
                 up_collision = True
-                print("up collision")
 
         for i in range(len(diagonal_walls)):
             if diagonal_walls[i].check_collision((player_position[0] + movement_speed), player_position[1]) == True:
