@@ -17,8 +17,13 @@ current_pointer = -1
 current_angle = 0
 animation_frame = -1
 movement_buffer = [-2,-2]
-
 score = 0
+
+player_run1 = simplegui.load_sound('https://drive.google.com/uc?id=1O10DU9OPkK0cHGoqFykGzahfVLO2X8wS')
+player_run2 = simplegui.load_sound('https://drive.google.com/uc?id=1qdf6LHuXBdks7rAtD8RNtJBkPs3Vc69G')
+player_run3 = simplegui.load_sound('https://drive.google.com/uc?id=1vU7XwQP-y2YKoRiMzWCS14ZApR6IMiWP')
+player_hit = simplegui.load_sound('https://drive.google.com/uc?id=1w8p0DfOAgSyesD8iaFZKIVzUXcq1i8HE')
+player_shoot = simplegui.load_sound('https://drive.google.com/uc?id=1A3qPUjpMPnxSWqT6bV7DF3jxhRn9mxrr')
 
 #MOVEMENT VALUES
 movement_up = False
@@ -43,6 +48,7 @@ def fire_bullet():
         current_pointer = 0
 
     if(shooting_cooldown >= 0):
+        player_shoot.play()
         newDir = [shooting_axis[0],shooting_axis[1]]
         offset = 45
         newPos = [player_position[0] + newDir[0] * offset,player_position[1] + newDir[1] * offset]
