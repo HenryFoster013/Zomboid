@@ -16,7 +16,6 @@ class Zombie():
         self.current_angle = 0;
         self.damage_cooldown = 0
         self.animation_frame = -1
-        self.smooth = True
         self.movement_axis = [0,0]
         
         self.up_collision = False
@@ -75,24 +74,21 @@ class Zombie():
         else:
             self.movement_axis[1] = 0
 
-        if(self.smooth):
-            self.SmoothFollowPlayer(player_position, x_difference, y_difference)
-        else:
-            self.FastFollowPlayer()
-
-    def GetSmooth(self):
-        return self.smooth
+        self.SmoothFollowPlayer(player_position, x_difference, y_difference)
     
     def SmoothFollowPlayer(self, player_position, x_difference, y_difference):
         displacement_magnitude = math.sqrt(x_difference**2 + y_difference**2)
-        if right_collision == False and x_difference > 0:
-            self.position[0] += (x_difference * self.speed) / displacement_magnitude
-        if left_collision == False and x_difference < 0:
-            self.position[0] += (x_difference * self.speed) / displacement_magnitude
-        if up_collision == False and y_difference < 0:
-            self.position[1] += (y_difference * self.speed) / displacement_magnitude
-        if down_collision == False and y_difference > 0:
-            self.position[1] += (y_difference * self.speed) / displacement_magnitude
+        newX = self.position[0]
+        newY = self.position[1]
+        if self.right_collision == False and x_difference > 0:
+            newX += (x_difference * self.speed) / displacement_magnitude
+        if self.left_collision == False and x_difference < 0:
+            newX += (x_difference * self.speed) / displacement_magnitude
+        if self.up_collision == False and y_difference < 0:
+            newY += (y_difference * self.speed) / displacement_magnitude
+        if self.down_collision == False and y_difference > 0:
+            newY += (y_difference * self.speed) / displacement_magnitude
+        self.position = (newX, newY)
 
     def FastFollowPlayer(self):
         mod = 1
@@ -100,19 +96,18 @@ class Zombie():
             mod = 0.7071
         self.position = (self.position[0] + (self.movement_axis[0] * mod * self.speed), self.position[1] + (self.movement_axis[1] * mod * self.speed))
 
-    def CheckCollisions(self, position):
+    def CheckCollisions(self, project):
+        position = project.position
         if self.dead == False:
-            if self.damage_cooldown > 0:
-                self.damage_cooldown -= 1
+            self.damage_cooldown -= 1
             if (self.position[0] + 23.0 >= position[0] and self.position[0] - 23.0 <= position[0]) and self.position[1] + 23.0 >= position[1] and self.position[1] - 23.0 <= position[1]:
-                if self.damage_cooldown == 0:
+                if self.damage_cooldown < 0:
                     self.health -= 25
-                    print("enemy hit")
-                    self.damage_cooldown = 50
+                    self.damage_cooldown = 3
+                project.kill()
 
     def Death(self):
         if self.health <=0:
-            #print("ZOMBO DEAD")
             self.speed = 0
             self.dead = True
             player.score += self.score_value
@@ -161,7 +156,7 @@ class Zombie():
         else:
             self.animation_frame = -1
 
-        frame_length = 6
+        frame_length = 9
 
         if(self.animation_frame > (frame_length * 4 - 1)):
             self.animation_frame = 0
@@ -177,29 +172,28 @@ class Zombie():
         return final_num
     
     def wall_collision_check(self):
-        global up_collision,down_collision,left_collision,right_collision
-        up_collision = False
-        down_collision = False
-        left_collision = False
-        right_collision = False
+        self.up_collision = False
+        self.down_collision = False
+        self.left_collision = False
+        self.right_collision = False
         for i in range(len(walls)):
             if walls[i].check_collision((self.position[0] + self.speed), self.position[1]) == True:
-                right_collision = True
+                self.right_collision = True
             if walls[i].check_collision((self.position[0] - self.speed), self.position[1]) == True:
-                left_collision = True
+                self.left_collision = True
             if walls[i].check_collision(self.position[0], (self.position[1] + self.speed)) == True:
-                down_collision = True
+                self.down_collision = True
             if walls[i].check_collision(self.position[0], (self.position[1] - 10)) == True:
-                up_collision = True
+                self.up_collision = True
 
         for i in range(len(diagonal_walls)):
             if diagonal_walls[i].check_collision((self.position[0] + self.speed), self.position[1]) == True:
-                right_collision = True
+                self.right_collision = True
             if diagonal_walls[i].check_collision((self.position[0] - self.speed), self.position[1]) == True:
-                left_collision = True
+                self.left_collision = True
             if diagonal_walls[i].check_collision(self.position[0], (self.position[1] + self.speed)) == True:
-                down_collision = True
+                self.down_collision = True
             if diagonal_walls[i].check_collision(self.position[0], (self.position[1] - self.speed)) == True:
-                up_collision = True
+                self.up_collision = True
     
     death_sprite = simplegui.load_image("https://drive.google.com/uc?id=1R83lnLK6gZX9LlnsT8vv2wAFQsoiyple")
