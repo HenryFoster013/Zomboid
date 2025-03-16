@@ -18,6 +18,8 @@ current_angle = 0
 animation_frame = -1
 movement_buffer = [-2,-2]
 score = 0
+health = 100
+hit_cooldown = -1
 
 player_run1 = simplegui.load_sound('https://drive.google.com/uc?id=1O10DU9OPkK0cHGoqFykGzahfVLO2X8wS')
 player_run2 = simplegui.load_sound('https://drive.google.com/uc?id=1qdf6LHuXBdks7rAtD8RNtJBkPs3Vc69G')
@@ -250,9 +252,28 @@ def wall_collision_check():
             if diagonal_walls[i].check_collision(player_position[0], (player_position[1] - movement_speed)) == True:
                 up_collision = True
 
+def GetHealth():
+    global health
+    return health
+
+def IsHurting():
+    global hit_cooldown
+    return (hit_cooldown > 0)
+
+def TakeDamage():
+    global hit_cooldown, health
+    if(hit_cooldown <= 0):
+        health -= 25
+        hit_cooldown = 30
+
+def Health():
+    global hit_cooldown
+    hit_cooldown -= 1
+
 def Update():
     Movement()
     Shooting()
     Rotation()
     wall_collision_check()
+    Health()
 
