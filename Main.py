@@ -21,6 +21,8 @@ zombie_count = len(zombie_list)
 dead_zombie_count = len(dead_zombie_list)
 total_zombie_count = 1
 
+game_over_back_bounds = ((361, 515), (454,556))
+
 def Game_Over(canvas):
     canvas.draw_image(game_over, (400,300), (800,600), (screen_width / 2, screen_height / 2), (800, 600))
     transparency = 1 - (frame_counter / 30)
@@ -189,9 +191,37 @@ def Key_Down_Handler(key):
 def Key_Up_Handler(key):
     player.Handle_Input_Up(key)
 
+
+def Mouse_Handler(position):
+    global current_state
+    if(current_state == 1):
+        inX = position[0] < game_over_back_bounds[1][0] and position[0] > game_over_back_bounds[0][0]
+        inY = position[1] < game_over_back_bounds[1][1] and position[1] > game_over_back_bounds[0][1]
+        if (inX and inY):
+            BackToMenu()
+
+def BackToMenu():
+    ResetGame()
+
+def ResetGame():
+    global wave_num, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count
+    player.Reset()
+    zombie = enemy.Zombie(100,2,10,[60,60],10)
+    wave_num = 1
+    zombie_list = [zombie]
+    dead_zombie_list = []
+    wave_timer = 600
+    bg_timer = 738
+    current_state = 0
+    zombie_count = len(zombie_list)
+    dead_zombie_count = len(dead_zombie_list)
+    total_zombie_count = 1
+    
+
 frame = simplegui.create_frame('Video Game', screen_width, screen_height)
 frame.set_keydown_handler(Key_Down_Handler)
 frame.set_keyup_handler(Key_Up_Handler)
+frame.set_mouseclick_handler(Mouse_Handler)
 
 frame.set_canvas_background('Black')
 
