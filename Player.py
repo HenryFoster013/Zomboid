@@ -271,15 +271,12 @@ def Health():
     hit_cooldown -= 1
 
 def Reset():
-    global player_position, movement_axis, shooting_axis, movement_speed, shooting_cooldown, max_cooldown, projectile_lifetime, max_projectiles, current_projectiles, current_pointer, current_angle
+    global player_position, movement_axis, shooting_axis, shooting_cooldown, projectile_lifetime, max_projectiles, current_projectiles, current_pointer, current_angle
     global animation_frame, movement_buffer, score, health, hit_cooldown
     player_position = [1152, 748]
     movement_axis = [0,0]
     shooting_axis = [0,0]
-    movement_speed = 8
     shooting_cooldown = -1
-    max_cooldown = 6
-    projectile_lifetime = 180
     current_projectiles = []
     for i in range(max_projectiles):
         current_projectiles.append(projectiles.bullet([0,0], [0,0], projectile_lifetime, False))
