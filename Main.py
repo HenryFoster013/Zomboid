@@ -9,7 +9,7 @@ import Tile as tile
 screen_width = 800
 screen_height = 600
 frame_counter = 0
-zombie = enemy.Zombie(100,2,10,[60,60],10)
+zombie = enemy.Zombie(100,4,10,[60,60],10)
 wave_num = 1
 zombie_list = [zombie]
 dead_zombie_list = []
@@ -156,7 +156,7 @@ def wave_handler():
             for x in range(new_zombie_count):
                 name = total_zombie_count 
                 zombie_list.append(name)
-                zombie_list[name] = enemy.Zombie(100,2,10,spawn_location(),10)
+                zombie_list[name] = enemy.Zombie(100,4,10,spawn_location(),10)
                 total_zombie_count += 1
 
 
@@ -206,7 +206,7 @@ def BackToMenu():
 def ResetGame():
     global wave_num, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count
     player.Reset()
-    zombie = enemy.Zombie(100,2,10,[60,60],10)
+    zombie = enemy.Zombie(100,4,10,[60,60],10)
     wave_num = 1
     zombie_list = [zombie]
     dead_zombie_list = []

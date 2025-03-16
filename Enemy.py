@@ -29,7 +29,6 @@ class Zombie():
 
     def GetPosition(self):
         return self.position
-    
 
     def DeathAnimation(self):
         
@@ -147,7 +146,7 @@ class Zombie():
         else:
             self.animation_frame = -1
 
-        frame_length = 12
+        frame_length = 8
 
         if(self.animation_frame > (frame_length * 4 - 1)):
             self.animation_frame = 0
