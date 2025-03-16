@@ -42,7 +42,10 @@ def Graphics(canvas):
     shooting_add = 0;
     if(player.GetMuzzleFlash()):
         shooting_add = 600
-    canvas.draw_image(player_spritesheet, ((200 * rot) + 100, (200 * frame) + 100 + shooting_add), (200, 200), midpoint, (150,150), 0)
+    sheet = player_spritesheet
+    if(player.IsHurting()):
+        sheet = player_hit
+    canvas.draw_image(sheet, ((200 * rot) + 100, (200 * frame) + 100 + shooting_add), (200, 200), midpoint, (150,150), 0)
 
     # ZOMBIE ANIMATION
     smoothing = (len(zombie_list) < 10)
@@ -73,8 +76,20 @@ def Graphics(canvas):
             offsettedPos = [projectile.position[0] + offset[0], projectile.position[1] + offset[1]]
             colour = "rgb(255,247,165)"
             canvas.draw_circle(offsettedPos, 3,1, colour, colour)
-    
 
+    # UI
+    HP_offset = (30,30)
+    HP_width = 20
+    HP_length = 1.5 * player.GetHealth()
+    HP_start = (HP_offset[0], HP_offset[1] + (HP_width // 2))
+    HP_end = (HP_offset[0] + HP_length, HP_offset[1] + (HP_width // 2))
+    canvas.draw_line((HP_start[0] - 3, HP_start[1]), (HP_offset[0] + 153, HP_end[1]), HP_width + 6, 'Black')
+    canvas.draw_line(HP_start, HP_end, HP_width, 'Red')
+    canvas.draw_text('HP', (33, 48), 20, 'Black')
+    canvas.draw_line((screen_width - 124, (HP_start[1])), (screen_width - 16, (HP_start[1])), HP_width + 6, 'Black')
+    canvas.draw_text('WAVE: ' + str(wave_num), (screen_width - 120, 48), 20, 'White')
+
+    # FOG
     canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
 
 def Draw_Handler(canvas):
@@ -165,6 +180,7 @@ fog = simplegui.load_image('https://drive.google.com/uc?id=13mg7pLi-NKC_CotzXw2e
 bgfog = simplegui.load_image('https://drive.google.com/uc?id=1KScILrlQKk9tMGTPWE6V5udo6HIRrxjC')
 background = simplegui.load_image('https://drive.google.com/uc?id=1xsla4hN7u9LZ6UgyjJ088w_AHSubAd-f')
 player_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=1N4fyrxW-1Y7CLO-3va-EVbaZQ65CQHaJ')
+player_hit = simplegui.load_image('https://drive.google.com/uc?id=1qoXoueTpBJM_aH_7e0nO_2n_RbeeQ6Pz')
 zombie_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=13FDMYzx1goduwwtE4WEganWopds8wMAo')
 
 

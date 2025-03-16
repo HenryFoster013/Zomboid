@@ -54,7 +54,7 @@ class Zombie():
             
 
 
-    def FollowPlayer(self, player_position):
+    def FollowPlayer(self, player_position, player):
 
         x_difference = player_position[0] - self.position[0]
         y_difference = player_position[1] - self.position[1]
@@ -74,10 +74,12 @@ class Zombie():
         else:
             self.movement_axis[1] = 0
 
-        self.SmoothFollowPlayer(player_position, x_difference, y_difference)
+        self.SmoothFollowPlayer(player_position, x_difference, y_difference, player)
     
-    def SmoothFollowPlayer(self, player_position, x_difference, y_difference):
+    def SmoothFollowPlayer(self, player_position, x_difference, y_difference, player):
         displacement_magnitude = math.sqrt(x_difference**2 + y_difference**2)
+        if(displacement_magnitude < 4):
+            player.TakeDamage()
         newX = self.position[0]
         newY = self.position[1]
         if self.right_collision == False and x_difference > 0:
@@ -89,12 +91,6 @@ class Zombie():
         if self.down_collision == False and y_difference > 0:
             newY += (y_difference * self.speed) / displacement_magnitude
         self.position = (newX, newY)
-
-    def FastFollowPlayer(self):
-        mod = 1
-        if(self.movement_axis[0] != 0 and self.movement_axis[1] != 0):
-            mod = 0.7071
-        self.position = (self.position[0] + (self.movement_axis[0] * mod * self.speed), self.position[1] + (self.movement_axis[1] * mod * self.speed))
 
     def CheckCollisions(self, project):
         position = project.position
@@ -116,7 +112,7 @@ class Zombie():
 
     def Update(self):
         self.wall_collision_check()
-        self.FollowPlayer(player.player_position)
+        self.FollowPlayer(player.player_position, player)
         self.Death()
 
     def GetRotation(self):
