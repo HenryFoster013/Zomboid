@@ -15,10 +15,23 @@ zombie_list = [zombie]
 dead_zombie_list = []
 wave_timer = 600
 bg_timer = 738
+current_state = 0
 
 zombie_count = len(zombie_list)
 dead_zombie_count = len(dead_zombie_list)
 total_zombie_count = 1
+
+def Game_Over(canvas):
+    canvas.draw_image(game_over, (400,300), (800,600), (screen_width / 2, screen_height / 2), (800, 600))
+    transparency = 1 - (frame_counter / 30)
+    if(transparency > 1):
+        transparency = 1
+    canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(255,0,0,' + str(transparency) + ')')
+
+def KillPlayer():
+    global current_state, frame_counter
+    current_state = 1
+    frame_counter = 0
 
 def Graphics(canvas):
     midpoint = [screen_width/2, screen_height/2]    
@@ -28,24 +41,15 @@ def Graphics(canvas):
     canvas.draw_image(bgfog, (400, 300), (800, 600), (screen_width / 2, screen_height / 2), (screen_width, screen_height))
     canvas.draw_image(background, (1920 / 2, 1080 / 2), (1920, 1080), (offset[0] + (1920 * 0.625), offset[1] + (1080 * 0.625)), (1920 * 1.25, 1080 * 1.25))
 
-    #ZOMBIE DEATH SPRITE (TEMP)
+    # ZOMBIE DEATH SPRITE (TEMP)
     for zomb1 in dead_zombie_list:
         if zomb1.dead == True:
             frame = zomb1.DeathAnimation(zomb1.death_sprite,4)
             zombiepos = (offset[0] + zomb1.GetPosition()[0], offset[1] + zomb1.GetPosition()[1])
             canvas.draw_image(zomb1.death_sprite,((frame[0]) + 100, (frame[1]) + 100), (200, 200), zombiepos, (150,150), 0)
 
-    # PLAYER ANIMATION
+    # PLAYER SHADOW
     canvas.draw_circle((midpoint[0], midpoint[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
-    rot = player.GetRotation()
-    frame = player.GetAnimationFrame()
-    shooting_add = 0;
-    if(player.GetMuzzleFlash()):
-        shooting_add = 600
-    sheet = player_spritesheet
-    if(player.IsHurting()):
-        sheet = player_hit
-    canvas.draw_image(sheet, ((200 * rot) + 100, (200 * frame) + 100 + shooting_add), (200, 200), midpoint, (150,150), 0)
 
     # ZOMBIE ANIMATION
     smoothing = (len(zombie_list) < 10)
@@ -57,6 +61,17 @@ def Graphics(canvas):
             if smoothing:
                 canvas.draw_circle((zombiepos[0], zombiepos[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
             canvas.draw_image(zombie_spritesheet, ((200 * rot) + 100, (200 * frame) + 100), (200, 200), zombiepos, (150,150), 0)
+
+    # PLAYER ANIMATION
+    rot = player.GetRotation()
+    frame = player.GetAnimationFrame()
+    shooting_add = 0;
+    if(player.GetMuzzleFlash()):
+        shooting_add = 600
+    sheet = player_spritesheet
+    if(player.IsHurting()):
+        sheet = player_hit
+    canvas.draw_image(sheet, ((200 * rot) + 100, (200 * frame) + 100 + shooting_add), (200, 200), midpoint, (150,150), 0)
 
     for projectile in player.current_projectiles:
         if(projectile.Alive()):
@@ -93,17 +108,26 @@ def Graphics(canvas):
     canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
 
 def Draw_Handler(canvas):
-    global screen_width, screen_height, frame_counter, bg_timer
+    global screen_width, screen_height, frame_counter, bg_timer, current_state
     frame_counter += 1
-    player.Update()
-    for zomb in (zombie_list):
-        zomb.Update()
-    wave_handler()
-    Graphics(canvas)
-    bg_timer -= 1
-    if(bg_timer <= 0):
-        bg_timer = 738
-        bgmusic.play()
+
+    if(current_state == 0):
+        player.Update()
+        for zomb in (zombie_list):
+            zomb.Update()
+        wave_handler()
+        
+        bg_timer -= 1
+        if(bg_timer <= 0):
+            bg_timer = 738
+            bgmusic.play()
+        if(player.GetHealth() <= 0):
+            KillPlayer()
+        else:
+            Graphics(canvas)
+    
+    if(current_state == 1): # NOT AN ELSE IF!! Needs to override on the death frame!!
+        Game_Over(canvas)
 
 def wave_handler():
     global zombie_count, zombie_list, wave_num, dead_zombie_list, total_zombie_count, wave_timer
@@ -182,6 +206,7 @@ background = simplegui.load_image('https://drive.google.com/uc?id=1xsla4hN7u9LZ6
 player_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=1N4fyrxW-1Y7CLO-3va-EVbaZQ65CQHaJ')
 player_hit = simplegui.load_image('https://drive.google.com/uc?id=1qoXoueTpBJM_aH_7e0nO_2n_RbeeQ6Pz')
 zombie_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=13FDMYzx1goduwwtE4WEganWopds8wMAo')
+game_over = simplegui.load_image('https://drive.google.com/uc?id=1ajbf2c1VxG3k-G_M6DxRad_QZSvCk2eK')
 
 
 frame.set_draw_handler(Draw_Handler)
