@@ -46,9 +46,9 @@ def Graphics(canvas):
     # ZOMBIE DEATH SPRITE (TEMP)
     for zomb1 in dead_zombie_list:
         if zomb1.dead == True:
-            frame = zomb1.DeathAnimation(zomb1.death_sprite,4)
+            frame = zomb1.DeathAnimation()
             zombiepos = (offset[0] + zomb1.GetPosition()[0], offset[1] + zomb1.GetPosition()[1])
-            canvas.draw_image(zomb1.death_sprite,((frame[0]) + 100, (frame[1]) + 100), (200, 200), zombiepos, (150,150), 0)
+            canvas.draw_image(zombie_death_sprite, ((frame * 200) + 100, 100), (200, 200), zombiepos, (162,162), 0)
 
     # PLAYER SHADOW
     canvas.draw_circle((midpoint[0], midpoint[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
@@ -62,12 +62,12 @@ def Graphics(canvas):
             zombiepos = (offset[0] + zomb.GetPosition()[0], offset[1] + zomb.GetPosition()[1])
             if smoothing:
                 canvas.draw_circle((zombiepos[0], zombiepos[1] + 30), 30, 1, 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)')
-            canvas.draw_image(zombie_spritesheet, ((200 * rot) + 100, (200 * frame) + 100), (200, 200), zombiepos, (150,150), 0)
+            canvas.draw_image(zombie_spritesheet, ((200 * rot) + 100, (200 * frame) + 100), (200, 200), zombiepos, (162,162), 0)
 
     # PLAYER ANIMATION
     rot = player.GetRotation()
     frame = player.GetAnimationFrame()
-    shooting_add = 0;
+    shooting_add = 0
     if(player.GetMuzzleFlash()):
         shooting_add = 600
     sheet = player_spritesheet
@@ -236,6 +236,7 @@ background = simplegui.load_image('https://drive.google.com/uc?id=1xsla4hN7u9LZ6
 player_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=1N4fyrxW-1Y7CLO-3va-EVbaZQ65CQHaJ')
 player_hit = simplegui.load_image('https://drive.google.com/uc?id=1qoXoueTpBJM_aH_7e0nO_2n_RbeeQ6Pz')
 zombie_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=13FDMYzx1goduwwtE4WEganWopds8wMAo')
+zombie_death_sprite = simplegui.load_image("https://drive.google.com/uc?id=1C1UpxSsLsHZQIaBPimZ8RmpJD3tHYwtN")
 game_over = simplegui.load_image('https://drive.google.com/uc?id=1ajbf2c1VxG3k-G_M6DxRad_QZSvCk2eK')
 
 
