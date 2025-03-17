@@ -15,19 +15,38 @@ zombie_list = [zombie]
 dead_zombie_list = []
 wave_timer = 600
 bg_timer = 738
-current_state = 0
+current_state = -1
 
 zombie_count = len(zombie_list)
 dead_zombie_count = len(dead_zombie_list)
 total_zombie_count = 1
 
-game_over_back_bounds = ((361, 515), (454,556))
+# UI Buttons
+game_over_back_bounds = ((283, 517), (516,555))
+start_bounds = ((37, 153), (180,190))
+loading_game = False
+loading_timer = 0
+
+def Title_Screen(canvas):
+    global loading_game, loading_timer, frame_counter
+    canvas.draw_image(title, (400,300), (800,600), (screen_width / 2, screen_height / 2), (800, 600))
+    trans_one = 1 - (frame_counter / 20)
+    if(trans_one < 0):
+        trans_one = 0
+    canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(0,0,0,' + str(trans_one) + ')')
+    if loading_game:
+        loading_timer += 1
+        trans_two = (loading_timer / 60)
+        if(trans_two > 1):
+            trans_two = 1
+            ResetGame()
+        canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(0,0,0,' + str(trans_two) + ')')
 
 def Game_Over(canvas):
     canvas.draw_image(game_over, (400,300), (800,600), (screen_width / 2, screen_height / 2), (800, 600))
     transparency = 1 - (frame_counter / 30)
-    if(transparency > 1):
-        transparency = 1
+    if(transparency < 0):
+        transparency = 0
     canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(255,0,0,' + str(transparency) + ')')
 
 def KillPlayer():
@@ -109,9 +128,26 @@ def Graphics(canvas):
     # FOG
     canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
 
+    # SCREEN BLOOD
+    blood_level = (100 - player.GetHealth()) // 25
+    if(blood_level == 1):
+        canvas.draw_image(blood, (200, 150), (400, 300), (screen_width / 2, screen_height / 2), (screen_width, screen_height))
+    elif(blood_level == 2):
+        canvas.draw_image(blood, (200, 450), (400, 300), (screen_width / 2, screen_height / 2), (screen_width, screen_height))
+    elif(blood_level > 2):
+        canvas.draw_image(blood, (200, 750), (400, 300), (screen_width / 2, screen_height / 2), (screen_width, screen_height))
+
+    # FADE IN
+    transparency = 1 - (frame_counter / 30)
+    if(transparency > 0):
+        canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(0,0,0,' + str(transparency) + ')')
+
 def Draw_Handler(canvas):
     global screen_width, screen_height, frame_counter, bg_timer, current_state
     frame_counter += 1
+
+    if(current_state == -1):
+        Title_Screen(canvas)
 
     if(current_state == 0):
         player.Update()
@@ -193,18 +229,28 @@ def Key_Up_Handler(key):
 
 
 def Mouse_Handler(position):
-    global current_state
+    global current_state, loading_game
     if(current_state == 1):
         inX = position[0] < game_over_back_bounds[1][0] and position[0] > game_over_back_bounds[0][0]
         inY = position[1] < game_over_back_bounds[1][1] and position[1] > game_over_back_bounds[0][1]
         if (inX and inY):
             BackToMenu()
+    
+    if(current_state == -1):
+        inX = position[0] < start_bounds[1][0] and position[0] > start_bounds[0][0]
+        inY = position[1] < start_bounds[1][1] and position[1] > start_bounds[0][1]
+        if (inX and inY):
+            loading_game = True
 
 def BackToMenu():
-    ResetGame()
+    global current_state, loading_game, loading_timer, frame_counter
+    current_state = -1
+    loading_game = False
+    loading_timer = 0
+    frame_counter = 0
 
 def ResetGame():
-    global wave_num, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count
+    global wave_num, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count, frame_counter
     player.Reset()
     zombie = enemy.Zombie(100,4,10,[60,60],10)
     wave_num = 1
@@ -216,6 +262,7 @@ def ResetGame():
     zombie_count = len(zombie_list)
     dead_zombie_count = len(dead_zombie_list)
     total_zombie_count = 1
+    frame_counter = 0
     
 
 frame = simplegui.create_frame('Video Game', screen_width, screen_height)
@@ -230,14 +277,16 @@ bgmusic.play()
 #zombie_death = simplegui.load_sound('https://drive.google.com/uc?id=113RkSNdnkkzjqzHPKdryopckHHCrHu-O')
 #zombie_hit = simplegui.load_sound('https://drive.google.com/uc?id=1TvVuUmrZ96RQ3jWNZ4X8DA9ZRBbab5Zr')
 
-fog = simplegui.load_image('https://drive.google.com/uc?id=13mg7pLi-NKC_CotzXw2ekIOKnjyuJ8hf')
-bgfog = simplegui.load_image('https://drive.google.com/uc?id=1KScILrlQKk9tMGTPWE6V5udo6HIRrxjC')
-background = simplegui.load_image('https://drive.google.com/uc?id=1xsla4hN7u9LZ6UgyjJ088w_AHSubAd-f')
-player_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=1N4fyrxW-1Y7CLO-3va-EVbaZQ65CQHaJ')
-player_hit = simplegui.load_image('https://drive.google.com/uc?id=1qoXoueTpBJM_aH_7e0nO_2n_RbeeQ6Pz')
-zombie_spritesheet = simplegui.load_image('https://drive.google.com/uc?id=13FDMYzx1goduwwtE4WEganWopds8wMAo')
-zombie_death_sprite = simplegui.load_image("https://drive.google.com/uc?id=1C1UpxSsLsHZQIaBPimZ8RmpJD3tHYwtN")
-game_over = simplegui.load_image('https://drive.google.com/uc?id=1ajbf2c1VxG3k-G_M6DxRad_QZSvCk2eK')
+fog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/fog.png')
+bgfog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/bgfog.png')
+background = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Background.jpeg')
+player_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player.png')
+player_hit = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player_hurt.png')
+zombie_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie.png')
+zombie_death_sprite = simplegui.load_image("https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie_death.png")
+game_over = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/GameOver.png')
+title = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Title.png')
+blood = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/blood.png')
 
 
 frame.set_draw_handler(Draw_Handler)

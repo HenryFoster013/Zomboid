@@ -71,8 +71,10 @@ class Zombie():
     
     def SmoothFollowPlayer(self, player_position, x_difference, y_difference, player):
         displacement_magnitude = math.sqrt(x_difference**2 + y_difference**2)
-        if(displacement_magnitude < 4):
+
+        if(displacement_magnitude < 24):
             player.TakeDamage()
+
         newX = self.position[0]
         newY = self.position[1]
         if self.right_collision == False and x_difference > 0:
