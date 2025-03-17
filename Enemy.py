@@ -1,11 +1,12 @@
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import math
+import random
 import Projectiles as projectiles
 import Player as player
 from Tile import *
 
 class Zombie():
-    def __init__(self,health, speed, damage, position, score_value):
+    def __init__(self,health, speed, damage, position, score_value, hit1, hit2, die1, die2):
         self.score_value = score_value
         self.health = health
         self.speed = speed
@@ -24,6 +25,11 @@ class Zombie():
         self.right_collision = False
 
         self.dead = False
+
+        self.hit_1_sfx = hit1
+        self.hit_2_sfx = hit2
+        self.die_1_sfx = die1
+        self.die_2_sfx = die2
 
         self.d_frame = 0
 
@@ -95,6 +101,22 @@ class Zombie():
                 if self.damage_cooldown < 0:
                     self.health -= 25
                     self.damage_cooldown = 3
+                    sfx_switch = (random.randint(0,1) == 1)
+                    if(self.health <= 0):
+                        if(sfx_switch):
+                            self.hit_1_sfx.rewind()
+                            self.hit_1_sfx.play()
+                        else:
+                            self.hit_2_sfx.rewind()
+                            self.hit_2_sfx.play()
+                    else:
+                        if(sfx_switch):
+                            self.die_1_sfx.rewind()
+                            self.die_1_sfx.play()
+                        else:
+                            self.die_2_sfx.rewind()
+                            self.die_2_sfx.play()
+
                 project.kill()
 
     def Death(self):
