@@ -9,7 +9,7 @@ class Zombie():
     def __init__(self,health, speed, damage, position, score_value, hit1, hit2, die1, die2):
         self.score_value = score_value
         self.health = health
-        self.speed = speed
+        self.speed = random.randint(speed - 2, speed)
         self.speed_buffer = speed
         self.damage = damage
         self.position = position
