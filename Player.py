@@ -21,11 +21,12 @@ score = 0
 health = 100
 hit_cooldown = -1
 
-player_run1 = simplegui.load_sound('https://drive.google.com/uc?id=1O10DU9OPkK0cHGoqFykGzahfVLO2X8wS')
-player_run2 = simplegui.load_sound('https://drive.google.com/uc?id=1qdf6LHuXBdks7rAtD8RNtJBkPs3Vc69G')
-player_run3 = simplegui.load_sound('https://drive.google.com/uc?id=1vU7XwQP-y2YKoRiMzWCS14ZApR6IMiWP')
-player_hit = simplegui.load_sound('https://drive.google.com/uc?id=1w8p0DfOAgSyesD8iaFZKIVzUXcq1i8HE')
-player_shoot = simplegui.load_sound('https://drive.google.com/uc?id=1A3qPUjpMPnxSWqT6bV7DF3jxhRn9mxrr')
+zomb_atk_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack1.wav')
+zomb_atk_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack2.wav')
+zomb_atk_3_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack3.wav')
+zombie_hits = (zomb_atk_1_sfx, zomb_atk_2_sfx, zomb_atk_3_sfx)
+current_zomb_hit = 0
+gunshot_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Gunshot1.wav')
 
 #MOVEMENT VALUES
 movement_up = False
@@ -50,7 +51,8 @@ def fire_bullet():
         current_pointer = 0
 
     if(shooting_cooldown >= 0):
-        player_shoot.play()
+        gunshot_sfx.rewind()
+        gunshot_sfx.play()
         newDir = [shooting_axis[0],shooting_axis[1]]
         offset = 45
         newPos = [player_position[0] + newDir[0] * offset,player_position[1] + newDir[1] * offset]
@@ -261,8 +263,16 @@ def IsHurting():
     return (hit_cooldown > 0)
 
 def TakeDamage():
-    global hit_cooldown, health
+    global hit_cooldown, health, current_zomb_hit, zombie_hits
     if(hit_cooldown <= 0):
+
+        zombie_hits[current_zomb_hit].rewind()
+        zombie_hits[current_zomb_hit].play()
+        
+        current_zomb_hit += 1
+        if current_zomb_hit > 2:
+            current_zomb_hit = 0
+
         health -= 25
         hit_cooldown = 30
 

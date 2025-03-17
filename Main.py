@@ -6,10 +6,31 @@ import Player as player
 import Enemy as enemy
 import Tile as tile
 
+title_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music1.wav')
+game_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music2.wav')
+zomb_hit_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit1.wav')
+zomb_hit_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit2.wav')
+zomb_die_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie1.wav')
+zomb_die_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie2.wav')
+player_death_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/PlayerDeath.wav')
+
+title_music.play()
+
+fog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/fog.png')
+bgfog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/bgfog.png')
+background = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Background.jpeg')
+player_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player.png')
+player_hit = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player_hurt.png')
+zombie_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie.png')
+zombie_death_sprite = simplegui.load_image("https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie_death.png")
+game_over = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/GameOver.png')
+title = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Title.png')
+blood = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/blood.png')
+
 screen_width = 800
 screen_height = 600
 frame_counter = 0
-zombie = enemy.Zombie(100,4,10,[60,60],10)
+zombie = enemy.Zombie(100,6,10,[60,60],10, zomb_hit_1_sfx, zomb_hit_2_sfx, zomb_die_1_sfx, zomb_die_2_sfx)
 wave_num = 1
 zombie_list = [zombie]
 dead_zombie_list = []
@@ -50,9 +71,12 @@ def Game_Over(canvas):
     canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(255,0,0,' + str(transparency) + ')')
 
 def KillPlayer():
-    global current_state, frame_counter
+    global current_state, frame_counter, player_death_sfx, game
     current_state = 1
     frame_counter = 0
+    player_death_sfx.rewind()
+    game_music.pause()
+    player_death_sfx.play()
 
 def Graphics(canvas):
     midpoint = [screen_width/2, screen_height/2]    
@@ -188,7 +212,7 @@ def wave_handler():
             for x in range(new_zombie_count):
                 name = total_zombie_count 
                 zombie_list.append(name)
-                zombie_list[name] = enemy.Zombie(100,4,10,spawn_location(),10)
+                zombie_list[name] = enemy.Zombie(100,6,10,spawn_location(),10, zomb_hit_1_sfx, zomb_hit_2_sfx, zomb_die_1_sfx, zomb_die_2_sfx)
                 total_zombie_count += 1
 
 
@@ -239,16 +263,23 @@ def Mouse_Handler(position):
             loading_game = True
 
 def BackToMenu():
-    global current_state, loading_game, loading_timer, frame_counter
+    global current_state, loading_game, loading_timer, frame_counter, player_death_sfx, title_music, game_music
+    player_death_sfx.pause()
+    game_music.pause()
+    title_music.rewind()
+    title_music.play()
     current_state = -1
     loading_game = False
     loading_timer = 0
     frame_counter = 0
 
 def ResetGame():
-    global wave_num, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count, frame_counter
+    global wave_num, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count, frame_counter, title_music, game_music
+    title_music.pause()
+    game_music.rewind()
+    game_music.play()
     player.Reset()
-    zombie = enemy.Zombie(100,4,10,[60,60],10)
+    zombie = enemy.Zombie(100,6,10,spawn_location(),10, zomb_hit_1_sfx, zomb_hit_2_sfx, zomb_die_1_sfx, zomb_die_2_sfx)
     wave_num = 1
     zombie_list = [zombie]
     dead_zombie_list = []
@@ -267,33 +298,6 @@ frame.set_keyup_handler(Key_Up_Handler)
 frame.set_mouseclick_handler(Mouse_Handler)
 
 frame.set_canvas_background('Black')
-
-title_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music1.mp3')
-title_music.play()
-
-
-game_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music2.mp3')
-gunshot_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Gunshot1.wav')
-zomb_hit_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit1.wav')
-zomb_hit_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit2.wav')
-zomb_atk_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack1.wav')
-zomb_atk_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack2.wav')
-zomb_atk_3_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack3.wav')
-zomb_die_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie1.wav')
-zomb_die_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie2.wav')
-player_death_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/PlayerDeath.wav')
-
-fog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/fog.png')
-bgfog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/bgfog.png')
-background = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Background.jpeg')
-player_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player.png')
-player_hit = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player_hurt.png')
-zombie_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie.png')
-zombie_death_sprite = simplegui.load_image("https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie_death.png")
-game_over = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/GameOver.png')
-title = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Title.png')
-blood = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/blood.png')
-
 
 frame.set_draw_handler(Draw_Handler)
 frame.start()
