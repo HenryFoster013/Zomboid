@@ -18,7 +18,7 @@ title_music.play()
 
 fog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/fog.png')
 bgfog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/bgfog.png')
-background = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Background.jpeg')
+background = simplegui.load_image('https://drive.google.com/uc?id=1XEFyoVuCssegS8HdPzk648cMVTPnMkVS')
 player_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player.png')
 player_hit = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player_hurt.png')
 zombie_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie.png')
