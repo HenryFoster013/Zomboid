@@ -155,10 +155,6 @@ def Draw_Handler(canvas):
             zomb.Update()
         wave_handler()
         
-        bg_timer -= 1
-        if(bg_timer <= 0):
-            bg_timer = 738
-            bgmusic.play()
         if(player.GetHealth() <= 0):
             KillPlayer()
         else:
@@ -272,10 +268,20 @@ frame.set_mouseclick_handler(Mouse_Handler)
 
 frame.set_canvas_background('Black')
 
-bgmusic = simplegui.load_sound('https://drive.google.com/uc?id=1KYtHghOEherZE_Lp9ZhZghRWVI8nmqmp')
-bgmusic.play()
-#zombie_death = simplegui.load_sound('https://drive.google.com/uc?id=113RkSNdnkkzjqzHPKdryopckHHCrHu-O')
-#zombie_hit = simplegui.load_sound('https://drive.google.com/uc?id=1TvVuUmrZ96RQ3jWNZ4X8DA9ZRBbab5Zr')
+title_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music1.mp3')
+title_music.play()
+
+
+game_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music2.mp3')
+gunshot_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Gunshot1.wav')
+zomb_hit_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit1.wav')
+zomb_hit_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit2.wav')
+zomb_atk_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack1.wav')
+zomb_atk_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack2.wav')
+zomb_atk_3_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack3.wav')
+zomb_die_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie1.wav')
+zomb_die_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie2.wav')
+player_death_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/PlayerDeath.wav')
 
 fog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/fog.png')
 bgfog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/bgfog.png')
