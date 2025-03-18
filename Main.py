@@ -8,11 +8,11 @@ import Tile as tile
 
 title_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music1.wav')
 game_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music2.wav')
-zomb_hit_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit1.wav')
-zomb_hit_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit2.wav')
-zomb_die_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie1.wav')
-zomb_die_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie2.wav')
-player_death_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/PlayerDeath.wav')
+zomb_hit_1_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit1.wav')
+zomb_hit_2_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit2.wav')
+zomb_die_1_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie1.wav')
+zomb_die_2_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie2.wav')
+player_death_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/PlayerDeath.wav')
 
 title_music.play()
 
@@ -37,7 +37,17 @@ dead_zombie_list = []
 wave_timer = 600
 bg_timer = 738
 current_state = -1
+
 current_score = 0
+high_score = 0
+
+f = open("highscore.txt", 'r')
+high_score_text = f.read()
+if(high_score_text == ""):
+    high_score_text = "0"
+high_score = int(high_score_text)
+
+f.close()
 
 zombie_count = len(zombie_list)
 dead_zombie_count = len(dead_zombie_list)
@@ -50,12 +60,15 @@ loading_game = False
 loading_timer = 0
 
 def Title_Screen(canvas):
-    global loading_game, loading_timer, frame_counter
+    global loading_game, loading_timer, frame_counter, high_score
     canvas.draw_image(title, (400,300), (800,600), (screen_width / 2, screen_height / 2), (800, 600))
     trans_one = 1 - (frame_counter / 20)
     if(trans_one < 0):
         trans_one = 0
     canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(0,0,0,' + str(trans_one) + ')')
+
+    canvas.draw_text('HIGH SCORE: ' + str(high_score), (8, screen_height - 8), 30, 'Black', 'monospace')
+
     if loading_game:
         loading_timer += 1
         trans_two = (loading_timer / 60)
@@ -69,15 +82,23 @@ def Game_Over(canvas):
     transparency = 1 - (frame_counter / 30)
     if(transparency < 0):
         transparency = 0
+
+    canvas.draw_text('FINAL SCORE: ' + str(current_score), ((screen_width // 2) - 90, (screen_height // 2) + 80), 20, 'rgb(225,10,55)', 'monospace')
     canvas.draw_line((0, screen_height // 2), (screen_width, screen_height // 2), screen_width, 'rgba(255,0,0,' + str(transparency) + ')')
 
 def KillPlayer():
-    global current_state, frame_counter, player_death_sfx, game
+    global current_state, frame_counter, player_death_sfx, game, high_score, current_score
     current_state = 1
     frame_counter = 0
     player_death_sfx.rewind()
     game_music.pause()
     player_death_sfx.play()
+    if(current_score > high_score):
+        f = open("highscore.txt", "w")
+        f.write(str(current_score))
+        high_score = current_score
+        f.close()
+
 
 def Graphics(canvas):
     global current_score
@@ -255,7 +276,6 @@ def Key_Down_Handler(key):
 
 def Key_Up_Handler(key):
     player.Handle_Input_Up(key)
-
 
 def Mouse_Handler(position):
     global current_state, loading_game
