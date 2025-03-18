@@ -25,7 +25,7 @@ zombie_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac18
 zombie_death_sprite = simplegui.load_image("https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie_death.png")
 game_over = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/GameOver.png')
 title = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Title.png')
-blood = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/blood.png')
+blood = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/blood_with_fog.png')
 
 screen_width = 800
 screen_height = 600
@@ -157,8 +157,8 @@ def Graphics(canvas):
     canvas.draw_text('SCORE: ' + str(current_score), (screen_width - 160, 78), 20, 'White', 'monospace')
 
     # FOG
-    #if(player.GetHealth() > 75): # GAME GETS LAGGY WITH SO MUCH TRANSPARENT OVERDRAW!! REMOVE GOG TO MAKE ROOM FOR BLOOD!!
-    #canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
+    if(player.GetHealth() > 75): # GAME GETS LAGGY WITH SO MUCH TRANSPARENT OVERDRAW!! REMOVE FOG TO MAKE ROOM FOR BLOOD!!
+        canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
 
     # SCREEN BLOOD
     blood_level = (100 - player.GetHealth()) // 25
