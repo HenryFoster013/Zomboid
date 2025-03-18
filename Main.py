@@ -18,7 +18,7 @@ title_music.play()
 
 fog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/fog.png')
 bgfog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/bgfog.png')
-background = simplegui.load_image('https://drive.google.com/uc?id=1XEFyoVuCssegS8HdPzk648cMVTPnMkVS')
+background = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/FadedBG.png')
 player_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player.png')
 player_hit = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player_hurt.png')
 zombie_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie.png')
@@ -37,6 +37,7 @@ dead_zombie_list = []
 wave_timer = 600
 bg_timer = 738
 current_state = -1
+current_score = 0
 
 zombie_count = len(zombie_list)
 dead_zombie_count = len(dead_zombie_list)
@@ -79,6 +80,8 @@ def KillPlayer():
     player_death_sfx.play()
 
 def Graphics(canvas):
+    global current_score
+
     midpoint = [screen_width/2, screen_height/2]    
     offset = [midpoint[0] - player.player_position[0], midpoint[1] - player.player_position[1]]
 
@@ -131,7 +134,9 @@ def Graphics(canvas):
                 projectile.kill()
             
             for zombCollision in zombie_list:
-                zombCollision.CheckCollisions(projectile)
+                if(zombCollision.CheckCollisions(projectile)):
+                    current_score += zombCollision.score_value
+
             projectile.Update()
             offsettedPos = [projectile.position[0] + offset[0], projectile.position[1] + offset[1]]
             colour = "rgb(255,247,165)"
@@ -145,12 +150,15 @@ def Graphics(canvas):
     HP_end = (HP_offset[0] + HP_length, HP_offset[1] + (HP_width // 2))
     canvas.draw_line((HP_start[0] - 3, HP_start[1]), (HP_offset[0] + 153, HP_end[1]), HP_width + 6, 'Black')
     canvas.draw_line(HP_start, HP_end, HP_width, 'Red')
-    canvas.draw_text('HP', (33, 48), 20, 'Black')
-    canvas.draw_line((screen_width - 124, (HP_start[1])), (screen_width - 16, (HP_start[1])), HP_width + 6, 'Black')
-    canvas.draw_text('WAVE: ' + str(wave_num), (screen_width - 120, 48), 20, 'White')
+    canvas.draw_text('HP', (33, 48), 20, 'Black', 'monospace')
+    canvas.draw_line((screen_width - 164, (HP_start[1])), (screen_width - 16, (HP_start[1])), HP_width + 6, 'Black')
+    canvas.draw_text('WAVE: ' + str(wave_num), (screen_width - 160, 48), 20, 'White', 'monospace')
+    canvas.draw_line((screen_width - 164, (HP_start[1] + 30)), (screen_width - 16, (HP_start[1] + 30)), HP_width + 6, 'Black')
+    canvas.draw_text('SCORE: ' + str(current_score), (screen_width - 160, 78), 20, 'White', 'monospace')
 
     # FOG
-    canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
+    #if(player.GetHealth() > 75): # GAME GETS LAGGY WITH SO MUCH TRANSPARENT OVERDRAW!! REMOVE GOG TO MAKE ROOM FOR BLOOD!!
+    #canvas.draw_image(fog, (1920 / 2, 1080 / 2), (1920, 1080), ((offset[0] * 1.5) + (1920 * 1.5) - 600, (offset[1] * 1.5) + (1080 * 1.5) - 400), (1920 * 3, 1080 * 3))
 
     # SCREEN BLOOD
     blood_level = (100 - player.GetHealth()) // 25
@@ -188,7 +196,7 @@ def Draw_Handler(canvas):
         Game_Over(canvas)
 
 def wave_handler():
-    global zombie_count, zombie_list, wave_num, dead_zombie_list, total_zombie_count, wave_timer
+    global zombie_count, zombie_list, wave_num, dead_zombie_list, total_zombie_count, wave_timer, current_score
     for zombMove in zombie_list:
             if zombMove.dead == True:
                 dead_zombie_list.append(zombMove)
@@ -198,6 +206,7 @@ def wave_handler():
     if zombie_count == 0:
         if wave_timer <= 0:
             print("wave cleared")
+            current_score += 150
             wave_num += 1
             new_zombie_count = 3
             while len(dead_zombie_list) != 0:
@@ -274,7 +283,8 @@ def BackToMenu():
     frame_counter = 0
 
 def ResetGame():
-    global wave_num, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count, frame_counter, title_music, game_music
+    global wave_num, current_score, zombie_list, dead_zombie_list, wave_timer, bg_timer, current_state, zombie_count, dead_zombie_count, total_zombie_count, frame_counter, title_music, game_music
+    current_score = 0
     title_music.pause()
     game_music.rewind()
     game_music.play()

@@ -95,6 +95,7 @@ class Zombie():
 
     def CheckCollisions(self, project):
         position = project.position
+        killed = False
         if self.dead == False:
             self.damage_cooldown -= 1
             if (self.position[0] + 23.0 >= position[0] and self.position[0] - 23.0 <= position[0]) and self.position[1] + 23.0 >= position[1] and self.position[1] - 23.0 <= position[1]:
@@ -102,7 +103,7 @@ class Zombie():
                     self.health -= 25
                     self.damage_cooldown = 3
                     sfx_switch = (random.randint(0,1) == 1)
-                    if(self.health <= 0):
+                    if(self.health > 0):
                         if(sfx_switch):
                             self.hit_1_sfx.rewind()
                             self.hit_1_sfx.play()
@@ -110,6 +111,7 @@ class Zombie():
                             self.hit_2_sfx.rewind()
                             self.hit_2_sfx.play()
                     else:
+                        killed = True
                         if(sfx_switch):
                             self.die_1_sfx.rewind()
                             self.die_1_sfx.play()
@@ -118,6 +120,8 @@ class Zombie():
                             self.die_2_sfx.play()
 
                 project.kill()
+
+        return killed
 
     def Death(self):
         if self.health <=0:
