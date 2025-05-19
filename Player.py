@@ -21,12 +21,12 @@ score = 0
 health = 100
 hit_cooldown = -1
 
-zomb_atk_1_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack1.wav')
-zomb_atk_2_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack2.wav')
-zomb_atk_3_sfx =  simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieAttack3.wav')
+zomb_atk_1_sfx =  simplegui._load_local_sound('Assets/ZombieAttack1.wav')
+zomb_atk_2_sfx =  simplegui._load_local_sound('Assets/ZombieAttack2.wav')
+zomb_atk_3_sfx =  simplegui._load_local_sound('Assets/ZombieAttack3.wav')
 zombie_hits = (zomb_atk_1_sfx, zomb_atk_2_sfx, zomb_atk_3_sfx)
 current_zomb_hit = 0
-gunshot_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Gunshot1.wav')
+gunshot_sfx = simplegui._load_local_sound('Assets/Gunshot1.wav')
 
 #MOVEMENT VALUES
 movement_up = False
