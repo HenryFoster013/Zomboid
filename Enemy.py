@@ -123,18 +123,17 @@ class Zombie():
 
         return killed
 
+    def Update(self):
+        self.wall_collision_check()
+        self.FollowPlayer(player.player_position, player)
+        self.Death()
+    
     def Death(self):
         if self.health <=0:
             self.speed = 0
             self.dead = True
             player.score += self.score_value
             return self.dead
-
-
-    def Update(self):
-        self.wall_collision_check()
-        self.FollowPlayer(player.player_position, player)
-        self.Death()
 
     def GetRotation(self):
         self.CalculateRotation()

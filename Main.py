@@ -6,26 +6,26 @@ import Player as player
 import Enemy as enemy
 import Tile as tile
 
-title_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music1.wav')
-game_music = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/music2.wav')
-zomb_hit_1_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit1.wav')
-zomb_hit_2_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Hit2.wav')
-zomb_die_1_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie1.wav')
-zomb_die_2_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/ZombieDie2.wav')
-player_death_sfx = simplegui.load_sound('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/PlayerDeath.wav')
+title_music = simplegui._load_local_sound('Assets/music1.wav')
+game_music = simplegui._load_local_sound('Assets/music2.wav')
+zomb_hit_1_sfx = simplegui._load_local_sound('Assets/Hit1.wav')
+zomb_hit_2_sfx = simplegui._load_local_sound('Assets/Hit2.wav')
+zomb_die_1_sfx = simplegui._load_local_sound('Assets/ZombieDie1.wav')
+zomb_die_2_sfx = simplegui._load_local_sound('Assets/ZombieDie2.wav')
+player_death_sfx = simplegui._load_local_sound('Assets/PlayerDeath.wav')
 
 title_music.play()
 
-fog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/fog.png')
-bgfog = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/bgfog.png')
-background = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/FadedBG.png')
-player_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player.png')
-player_hit = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/player_hurt.png')
-zombie_spritesheet = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie.png')
-zombie_death_sprite = simplegui.load_image("https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/zombie_death.png")
-game_over = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/GameOver.png')
-title = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/Title.png')
-blood = simplegui.load_image('https://www.cs.rhul.ac.uk/home/znac189/ZOMBOID/blood_with_fog.png')
+fog = simplegui._load_local_image('Assets/fog.png')
+bgfog = simplegui._load_local_image('Assets/bgfog.png')
+background = simplegui._load_local_image('Assets/FadedBG.png')
+player_spritesheet = simplegui._load_local_image('Assets/player.png')
+player_hit = simplegui._load_local_image('Assets/player_hurt.png')
+zombie_spritesheet = simplegui._load_local_image('Assets/zombie.png')
+zombie_death_sprite = simplegui._load_local_image("Assets/zombie_death.png")
+game_over = simplegui._load_local_image('Assets/GameOver.png')
+title = simplegui._load_local_image('Assets/Title.png')
+blood = simplegui._load_local_image('Assets/blood_with_fog.png')
 
 screen_width = 800
 screen_height = 600
